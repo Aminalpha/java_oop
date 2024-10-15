@@ -9,9 +9,9 @@ public class Library {
 
     //Start Inner class
     class Book {
-        String title;
-        String author;
-        boolean isAvailable;
+        private String title;
+        private String author;
+        private boolean isAvailable;
 
         public Book(String title, String author, boolean isAvailable){
             this.title = title;
@@ -56,42 +56,29 @@ public class Library {
     }
 
     public void borrowBook(String title){
-
-        for(Book book: books)
-            if(title.equalsIgnoreCase(book.title))
-                book.borrowBook();
+        books.stream()
+                .filter(b -> title.equalsIgnoreCase(b.title) && b.isAvailable)
+                .limit(1)
+                .forEach(Book::borrowBook);
 
         displayBook();
     }
 
     public void returnBook(String title){
 
-        for(Book book: books){
-            if(title.equalsIgnoreCase(book.title)){
-                book.returnBook();
-            }
-        }
+        books.stream()
+                .filter(b->title.equalsIgnoreCase(b.title) && !b.isAvailable)
+                .limit(1)
+                .forEach(Book::returnBook);
+
         displayBook();
     }
 
-//    public void (){
-//        for(Book book: books){
-//            if(book.returnBook(book)){
-//                System.out.println("You've returned \""+book.title+"\"");
-//            }
-//        }
-//        displayBook();
-//
-//    }
-
     public void displayBook(){
         System.out.println("Library collection: ");
-        for( Book book: books ){
-            System.out.println(book);
-        }
+        books.forEach(System.out::println);
+
     }
-
-
 
     public static void main(String[] args){
 
@@ -99,17 +86,20 @@ public class Library {
         Library library = new Library();
         library.addNewBook("1984","George Orwell");
         library.addNewBook("To Kill a Mockingbird", "Harper Lee");
+        library.addNewBook("1984","George Orwell");
 
         System.out.println("********* After displaying books *********");
         library.displayBook();
 
         System.out.println("********* After borrowing a book *********");
         library.borrowBook("1984");
+        library.borrowBook("1984");
 
         System.out.println("********* After returning a book *********");
         library.returnBook("1984");
 
     }
+
 
 
 
